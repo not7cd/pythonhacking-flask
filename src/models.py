@@ -6,21 +6,6 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 from src import db
 
-class Task(db.Model):
-    """Task database tables"""
-    id = db.Column(db.Integer, primary_key=True)
-    description = db.Column(db.String(300))
-    date_created = db.Column(db.DateTime, default=datetime.utcnow)
-    date_due = db.Column(db.DateTime)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-
-    @staticmethod
-    def newest(num: int) -> list:
-        """Return <num> of latest cars"""
-        return Task.query.order_by(desc(Task.date_created)).limit(num)
-
-    def __repr__(self) -> str:
-        return "<Task '{}': '{}'>".format(self.description, self.date_created)
 
 class User(db.Model, UserMixin):
     """User database table"""
@@ -51,3 +36,26 @@ class User(db.Model, UserMixin):
 
     def __repr__(self) -> str:
         return '<User %r>' % self.username
+
+
+class Task(db.Model):
+    """Task database tables"""
+    id = db.Column(db.Integer, primary_key=True)
+    description = db.Column(db.String(300))
+    date_created = db.Column(db.DateTime, default=datetime.utcnow)
+    date_due = db.Column(db.DateTime)
+    status = db.Column(db.String(30))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+    @staticmethod
+    def newest(num: int) -> list:
+        """Return <num> of latest cars"""
+        return Task.query.order_by(desc(Task.date_created)).limit(num)
+
+    @staticmethod
+    def get_tasks_for_user(username: User):
+        """Return tasks for a particular user"""
+        return Task.query.filter_by(name=username)
+
+    def __repr__(self) -> str:
+        return "<Task '{}': '{}'>".format(self.description, self.date_created)

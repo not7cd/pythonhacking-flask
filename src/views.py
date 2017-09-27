@@ -8,7 +8,7 @@ from flask_login import login_required, login_user,\
     logout_user, current_user
 
 from src import app, db, login_manager
-from src.forms import CarForm, LoginForm, SignInForm
+from src.forms import TaskForm, LoginForm, SignInForm
 from src.models import User, Task
 
 
@@ -29,7 +29,7 @@ def sign_up():
     form = SignInForm()
     if form.validate_on_submit():
         user = User(
-            name=form.user.data,
+            name=form.name.data,
             password=form.password.data,
             email=form.email.data,
         )
@@ -45,9 +45,9 @@ def login():
     """Login view"""
     form = LoginForm()
     if form.validate_on_submit():
-        username = form.username.data
+        name = form.name.data
         password = form.password.data
-        user = User.get_by_name(username)
+        user = User.get_by_name(name)
         if user is not None and user.check_password(password):
             should_stay_logged = form.remember_me.data
             login_user(user, should_stay_logged)
@@ -67,9 +67,9 @@ def logout():
 
 @app.route('/task', methods=['GET', 'POST'])
 @login_required
-def add_car():
+def add_task():
     """View for adding new car"""
-    form = CarForm()
+    form = TaskForm()
     if form.validate_on_submit():
         description = form.description.data
         # TODO: add date due
@@ -78,7 +78,7 @@ def add_car():
         db.session.commit()
         flash('Zapisano zadanie: {}'.format(description))
         return redirect(url_for('index'))
-    return render_template('add_car.html', form=form)
+    return render_template('add_task.html', form=form)
 
 
 @app.route('/some_json')

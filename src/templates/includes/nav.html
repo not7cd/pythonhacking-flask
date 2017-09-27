@@ -3,7 +3,7 @@
   <div class="nav-wrapper container">
     <a href="{{ url_for('index') }}" class="brand-logo left">Flask TODO</a>
     <ul id="nav-mobile" class="right">
-      <li><a href="{{ url_for('add_car') }}" class="waves-effect waves-light btn pink accent-4">Nowe Zadanie</a></li>
+      <li><a href="{{ url_for('add_task') }}" class="waves-effect waves-light btn pink accent-4">Nowe Zadanie</a></li>
       {% if current_user.is_authenticated %}
       <li><a href="{{ url_for('logout') }}">Wyloguj</a></li>
       {% else %}

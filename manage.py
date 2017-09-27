@@ -3,18 +3,25 @@ from flask_script import Manager, prompt_bool
 
 from src import app, db
 from src.models import Task, User
+from helpers.db_init_helpers import USERS, TASKS
 
 manager = Manager(app)
 
 
+def create_users(conn: SQLAlchemy, users: list):
+    for user_args in users:
+        conn.session.add(User(**user_args))
+
+
+def create_tasks(conn: SQLAlchemy, tasks: list):
+    for task_args in tasks:
+        conn.session.add(Task(**task_args))
+
+
 def fill_db(conn: SQLAlchemy):
     """Fill database with initial fake data"""
-    conn.session.add(User(name='Patryk', password='admin', email='pat@mail.pl'))
-    conn.session.add(User(name='Nikodem', password='admin', email='nik@mail.pl'))
-    conn.session.add(User(name='Andrzej', password='admin', email='and@mail.pl'))
-    conn.session.add(Task(description='Opel', user_id=1))
-    conn.session.add(Task(description='BMW', user_id=2))
-    conn.session.add(Task(description='Lexus', user_id=3))
+    create_users(conn, USERS)
+    create_tasks(conn, TASKS)
     conn.session.commit()
 
 
