@@ -1,7 +1,8 @@
+from io import BytesIO
+from flask import send_file
 from icalendar import Calendar, Todo
-from datetime import datetime
 from src.models import Task
-import pytz
+from datetime import datetime
 
 
 def import_ical_to_tasks(ical):
@@ -21,6 +22,7 @@ def export_tasks_to_ical(tasks):
 
     for task in tasks:
         todo = Todo()
+        # TODO: export all fields
         todo.add('summary', task.description)
         todo.add('dtstamp', task.date_created)
         if task.date_due:
@@ -28,3 +30,14 @@ def export_tasks_to_ical(tasks):
         cal.add_component(todo)
 
     return cal
+
+def send_ical_file(ical):
+    """Sends .ical file created from icalendar.Calendar"""
+    ical_io = BytesIO()
+    ical_io.write(ical.to_ical())
+    ical_io.seek(0)
+
+    filename = "%s_%s.ical" % (ical['summary'], datetime.now().isoformat(timespec='seconds'))
+    return send_file(ical_io,
+                     attachment_filename=filename,
+                     as_attachment=True)

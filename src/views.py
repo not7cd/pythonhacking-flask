@@ -9,7 +9,8 @@ from flask_login import login_required, login_user,\
 from src import app, db, login_manager
 from src.forms import TaskForm, LoginForm, SignInForm
 from src.models import User, Task
-from src.ical_adapter import import_ical_to_tasks, export_tasks_to_ical
+from src.ical_adapter import import_ical_to_tasks, export_tasks_to_ical, send_ical_file
+
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -101,21 +102,13 @@ def add_task():
 #     # TODO: add template
 #     return render_template('add_car.html', form=form)
 
-@app.route('/export', methods=['GET', 'POST'])
+
+@app.route('/export', methods=['GET'])
 @login_required
 def export_ical():
     """View for adding new car"""
     user = current_user
     tasks = list(Task.get_tasks_for_user(user.id))
     ical = export_tasks_to_ical(tasks)
-    return ical.to_ical()
-
-
-@app.route('/some_json')
-def some_json():
-    """Json example"""
-    json_ = {
-        'date': datetime.utcnow(),
-        'epoch_time': time.time(),
-    }
-    return jsonify(json_)
+    ical['summary'] = '%s_todos' % user.name
+    return send_ical_file(ical)
