@@ -40,6 +40,6 @@ TASKS = [
         description='Projekt na uczelni.',
         date_due=(datetime.datetime.utcnow() +
                   datetime.timedelta(days=15)),
-        status='DANE'
+        status='DONE'
     )
 ]

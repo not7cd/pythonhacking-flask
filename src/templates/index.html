@@ -10,6 +10,9 @@
         <tr>
           <th>Właściciel</th>
           <th>Opis</th>
+          <th>Utworzono</th>
+          <th>Deadline</th>
+          <th>Status</th>
         </tr>
       </thead>
 
@@ -18,6 +21,9 @@
         <tr>
           <td>{{ task.user.name }}</td>
           <td>{{ task.description }}</td>
+          <td>{{ task.date_created }}</td>
+          <td>{{ task.date_due }}</td>
+          <td>{{ task.status }}</td>
         </tr>
         {% endfor %}
       </tbody>

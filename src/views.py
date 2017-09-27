@@ -1,5 +1,4 @@
 import time
-from random import randint
 from datetime import datetime
 
 from flask import render_template, jsonify, redirect, \
@@ -21,7 +20,12 @@ def load_user(user_id):
 @app.route('/index')
 def index():
     """Index view"""
-    return render_template('index.html', new_tasks=Task.newest(5))
+    user = current_user
+    if hasattr(user, 'id'):
+        return render_template('index.html',
+                               new_tasks=Task.get_tasks_for_user(user.id))
+    return render_template('index.html',
+                           new_tasks=Task.newest(5))
 
 
 @app.route('/signup', methods=['GET', 'POST'])

@@ -55,7 +55,7 @@ class Task(db.Model):
     @staticmethod
     def get_tasks_for_user(username: User):
         """Return tasks for a particular user"""
-        return Task.query.filter_by(name=username)
+        return Task.query.filter_by(user_id=username)
 
     def __repr__(self) -> str:
         return "<Task '{}': '{}'>".format(self.description, self.date_created)
