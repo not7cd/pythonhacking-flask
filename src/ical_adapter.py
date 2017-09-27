@@ -1,6 +1,7 @@
 from icalendar import Calendar, Todo
 from datetime import datetime
 from src.models import Task
+import pytz
 
 
 def import_ical_to_tasks(ical):
@@ -22,7 +23,8 @@ def export_tasks_to_ical(tasks):
         todo = Todo()
         todo.add('summary', task.description)
         todo.add('dtstamp', task.date_created)
-        todo.add('due', task.date_due)
+        if task.date_due:
+            todo.add('due', task.date_due)
         cal.add_component(todo)
 
     return cal

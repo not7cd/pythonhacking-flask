@@ -9,7 +9,7 @@ from flask_login import login_required, login_user,\
 from src import app, db, login_manager
 from src.forms import TaskForm, LoginForm, SignInForm
 from src.models import User, Task
-from src.ical_adapter import import_ical_to_tasks
+from src.ical_adapter import import_ical_to_tasks, export_tasks_to_ical
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -71,7 +71,7 @@ def logout():
 
 @app.route('/task', methods=['GET', 'POST'])
 @login_required
-def add_car():
+def add_task():
     """View for adding new car"""
     form = TaskForm()
     if form.validate_on_submit():
@@ -84,22 +84,31 @@ def add_car():
         return redirect(url_for('index'))
     return render_template('add_car.html', form=form)
 
-@app.route('/import', methods=['GET', 'POST'])
+# @app.route('/import', methods=['GET', 'POST'])
+# @login_required
+# def import_ical():
+#     """View for adding new car"""
+#     form = ImportForm()
+#     if form.validate_on_submit():
+#         file = form.file.data
+#         tasks = import_ical_to_model()
+#         task_num = len(tasks)
+#         for task in tasks:
+#             db.session.add(task)
+#         db.session.commit()
+#         flash('Zaimportowano {} elementów'.format(task_num))
+#         return redirect(url_for('index'))
+#     # TODO: add template
+#     return render_template('add_car.html', form=form)
+
+@app.route('/export', methods=['GET', 'POST'])
 @login_required
-def import_ical():
+def export_ical():
     """View for adding new car"""
-    form = ImportForm()
-    if form.validate_on_submit():
-        file = form.file.data
-        tasks = import_ical_to_model()
-        task_num = len(tasks)
-        for task in tasks:
-            db.session.add(task)
-        db.session.commit()
-        flash('Zaimportowano {} elementów'.format(task_num))
-        return redirect(url_for('index'))
-    # TODO: add template
-    return render_template('add_car.html', form=form)
+    user = current_user
+    tasks = list(Task.get_tasks_for_user(user.id))
+    ical = export_tasks_to_ical(tasks)
+    return ical.to_ical()
 
 
 @app.route('/some_json')
