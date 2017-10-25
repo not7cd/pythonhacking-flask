@@ -10,8 +10,7 @@ docker-run:
 	docker build --file=./Dockerfile --tag=flask_hs3 ./
 	docker run -it -p $(PORT):5000 flask_hs3
 
-run:
-	make init
+run: init
 	python manage.py runserver --host 0.0.0.0
 	
 reset-db:
